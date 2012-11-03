@@ -19,4 +19,28 @@ public class Input{
 		input_commands.add(new InputCommand("send", "p1"));
 		
 	}
+	public Input(List<InputNode> input_nodes, List<InputLink> input_links,
+			List<InputCommand> input_commands) {
+		super();
+		this.input_nodes = input_nodes;
+		this.input_links = input_links;
+		this.input_commands = input_commands;
+	}
+	public List<InputNode> getInput_nodes() {
+		return input_nodes;
+	}
+	public List<InputLink> getInput_links() {
+		return input_links;
+	}
+	public List<InputCommand> getInput_commands() {
+		return input_commands;
+	}
+	public InputNode getNodeFromName(String name){
+		for(int i=0;i<input_nodes.size();i++){
+			if(input_nodes.get(i).name.equals(name)){
+				return input_nodes.get(i);
+			}
+		}
+		return null;
+	}
 }

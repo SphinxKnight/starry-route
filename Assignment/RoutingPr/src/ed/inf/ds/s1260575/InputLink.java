@@ -5,6 +5,6 @@ public class InputLink {
 	String right_name;
 	public InputLink (String nl, String nr){
 		this.left_name = nl;
-		this.right_name = nl;
+		this.right_name = nr;
 	}
 }

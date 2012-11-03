@@ -2,11 +2,11 @@ package ed.inf.ds.s1260575;
 
 
 public class LineTable{
-	private InputNode dest;
+	private int adress;
 	private InputLink link;
 	private int cost;
-	public LineTable(InputNode dest,InputLink link, int cost){
-		this.dest = dest;
+	public LineTable(int adress,InputLink link, int cost){
+		this.adress = adress;
 		this.link = link;
 		this.cost = cost;
 	}
@@ -18,8 +18,8 @@ public class LineTable{
 		
 		return cost;
 	}
-	public InputNode getDest() {
+	public int getAdress() {
 		
-		return dest;
+		return adress;
 	}
 }
