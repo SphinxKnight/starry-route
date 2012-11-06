@@ -2,10 +2,11 @@ package ed.inf.ds.s1260575;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.AbstractQueue;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 
@@ -62,9 +63,12 @@ public class RouteThread {
    		ArrayList<String> listNameNodes= new ArrayList<String>();
    		for(InputNode inputnode : alin1){
    			listNameNodes.add(inputnode.name);
+   			ConcurrentLinkedQueue<MessageTable> qmt = new ConcurrentLinkedQueue<MessageTable>();
+   			messagesList.add(qmt);
    		}
+   		
    		//Create Array List Table
-   		ArrayList<Table> listTables = new ArrayList<Table>();
+   		
    		for (InputNode inputnode : alin1) {
 			String currName = inputnode.name;
 			Table currTable = new Table();
@@ -75,42 +79,62 @@ public class RouteThread {
 				alli.add(localLine);
 			}
 			
-			//Catch link and register in table
-			for(InputLink inputLink : alil1){
-				if(inputLink.left_name.equals(currName)){
-					InputNode in = input1.getNodeFromName(inputLink.right_name);
-					for (int adress : in.local_addresses) {
-						LineTable lt=new LineTable(adress, inputLink, 1);
-						alli.add(lt);
-					}
-					
-				}
-				else if(inputLink.right_name.equals(currName)){
-					//Add the reverse link 
-					InputLink newLink = new InputLink(currName,inputLink.left_name);
-					InputNode in =input1.getNodeFromName(inputLink.left_name);
-					for (int adress : in.local_addresses) {
-						LineTable lt=new LineTable(adress, newLink, 1);
-						alli.add(lt);
-					}
-				}
-			}
+//			//Catch link and register in table
+//			for(InputLink inputLink : alil1){
+//				if(inputLink.left_name.equals(currName)){
+//					InputNode in = input1.getNodeFromName(inputLink.right_name);
+//					for (int adress : in.local_addresses) {
+//						LineTable lt=new LineTable(adress, inputLink, 1);
+//						alli.add(lt);
+//					}
+//					
+//				}
+//				else if(inputLink.right_name.equals(currName)){
+//					//Add the reverse link 
+//					InputLink newLink = new InputLink(currName,inputLink.left_name);
+//					InputNode in =input1.getNodeFromName(inputLink.left_name);
+//					for (int adress : in.local_addresses) {
+//						LineTable lt=new LineTable(adress, newLink, 1);
+//						alli.add(lt);
+//					}
+//				}
+//			}
 			
 			currTable.setRouteTable(alli);
-			ThreadTransfert tt = new ThreadTransfert(listNameNodes, messagesList, inputnode.name, currTable);
+			ThreadTransfert tt = new ThreadTransfert(listNameNodes, messagesList, inputnode.name, currTable, alil1);
 			altt.add(tt);
    		}
    		
+   		ArrayList<String> namesToSend = new ArrayList<String>();
+   		for(InputCommand ic : alic1){
+   			namesToSend.add(ic.process_name);
+   		}
    		
-   		
+//   		for (ThreadTransfert threadTransfert : altt) {
+//        	threadTransfert.printTable();
+//   		}
+//   		System.out.println("_*_*_*_*_*_*_*_*_*_*_*_*");
+   		//Launch everything 
         for (ThreadTransfert threadTransfert : altt) {
-			threadTransfert.printTable();
-			
+         	if(namesToSend.contains(threadTransfert.getIdd())){
+//           		System.out.println("Primary send from : "+threadTransfert.getIdd());
+        		threadTransfert.sendTableToAll();
+        	}
+        }
+       
+        for (ThreadTransfert threadTransfert : altt) {
+        	threadTransfert.start();
+        	
 		}
+        //Don't add anything here (mess with resources)
+        
+        return;
+      
     }
    	
 	  public static void main(String[] args) throws FileNotFoundException {
 		RouteThread rc = new RouteThread();
+		return;
 	}
 	
 }
