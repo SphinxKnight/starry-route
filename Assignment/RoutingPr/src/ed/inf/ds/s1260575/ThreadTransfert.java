@@ -112,7 +112,8 @@ public class ThreadTransfert extends Thread {
     	if(hasChanged){
 //    		this.printTable();
     		//If table changed, send it to everyone else
-    		this.sendTableToAll(ms.getName());
+//    		this.sendTableToAll(ms.getName());
+    		this.sendTableToAll();
     	}
     	return;
     }
