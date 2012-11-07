@@ -102,7 +102,8 @@ public class ThreadTransfert extends Thread {
 //    	System.out.println("Message for : "+this.id+" !");
     	//Printing the "receive" event
     	String lines="";
-    	for(LineTable lt : ms.getTable().getRouteTable()){
+    	ArrayList<LineTable> tabl = new ArrayList<LineTable>(ms.getTable().getRouteTable());
+    	for(LineTable lt : tabl){
     		lines+=" ("+Integer.toString(lt.getAdress())+"|"+lt.getLink().right_name+"|"+Integer.toString(lt.getCost())+")";
     	}
 		System.out.println("receive "+ms.getName()+" "+this.id+" "+lines);
@@ -111,7 +112,71 @@ public class ThreadTransfert extends Thread {
 		boolean hasChanged = refreshTable(ms.getName(),ms.getTable());
     	if(hasChanged){
 //    		this.printTable();
-    		//If table changed, send it to everyone else
+    		
+    		
+    		
+    		/*When a process p1 updates its table in response to a table received
+    		from process p2, is it necessary that process p1 sends its updated table
+    		back to process p2? Explain the reasoning behind your answer.*/
+    		
+    		//Answer to the question 1//
+    		
+    		/*It is necessary for such a process p1 to send back the table to the 
+    		 * sender process. I will take a simple example to demonstrate this assumption.
+    		 * If you use a graph with (only) the following links :
+    		 *  p1<->p2
+    		 *  p2<->p3
+    		 *  p3<->p4
+    		 *  ... (and so on) 
+    		 * i.e. the structure of the graph is linear (can be described like this also :
+    		 * p1-p2-p3-p4-...)
+    		 *  and you do not send back the tables, the last node will be the only one with all 
+    		 *  the information. Here p1 will not know anything about p4 (even p3). By sending 
+    		 *  back every refreshed table, we can have a correct final solution.
+    		 */
+    		//End of the answer of the question 1//
+    		
+    		/*
+    		 * Whether you answered yes or no to the first part, does requiring p1
+				to return its updated table to p2 increase or decrease the number of
+				events required for the algorithm to converge, or does it depend on the
+				network and/or ordering of events? Try to justify your answer with
+				logic and/or statistics from your simulator.
+    		 */
+    		  		
+    		//Answer of the question 2//
+    		
+    		/*The previous answer is I think relevant to help answer this question.
+    		 * The number of events (receive/send) will increase, because at least
+    		 * one node will send an additional message. 
+    		 * If we compare the simple "linear" solution (explained above), 
+    		 * (first message send by p1 in the initiation file) we have 
+    		 * 		-6 events without sending back 
+    		 * 		-28 events with sending back (in one case)
+    		 *  	
+    		 * In both case, the algorithm converge, but in the first case, the solution
+    		 * is incomplete. 
+    		 *  However we can also take the example of the circular graph
+    		 *  p1<->p2<->p3<->p4<->p1
+    		 *  Where the initiation is done by p1 :
+    		 *  	-20 events without sending back
+    		 *  	-44 events with sending back (in one case)
+    		 *  Here, given the structure of the graph, both solution are equals.
+    		 *  
+    		 *  The order of events, at least with this threads-oriented simulation impacts slightly
+ 			 *  the number of events (variations observed approximately +- 4 events). About the order,
+ 			 *  using threads and running several times a simulation based on the same input was useful
+ 			 *  to observe this phenomenon.
+    		 *  To conclude, I would say that the number of events increases (at least by 1 message) 
+    		 *  with sending back the new table. However this increase and the impact on the final
+    		 *  solution are really coupled with the structure of the graph used. 
+ 			 * 
+ 			 *  
+    		 *  
+    		 */
+    		
+    		//End of the answer of the question 2//
+    		//If table changed, send it to everyone else 
 //    		this.sendTableToAll(ms.getName());
     		this.sendTableToAll();
     	}
@@ -133,7 +198,7 @@ public class ThreadTransfert extends Thread {
     	}
 		System.out.println("send "+nameSender+" "+nameReceiver+" "+lines);
 		//End of logging
-		
+			
 		//Actual message
    		messagesList.get(index).add(new MessageTable(nameSender,this.table));
    		   		
