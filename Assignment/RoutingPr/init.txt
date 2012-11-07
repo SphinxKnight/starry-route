@@ -2,9 +2,14 @@ node p1 1
 node p2 2
 node p3 3
 node p4 4 5
+node p5 6 7 8
+node p6 9
+node p7 10
 
 link p1 p2
+link p2 p3
 link p3 p4
+link p4 p5
+link p5 p6
 
 send p1
-send p4
